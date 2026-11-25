@@ -178,7 +178,7 @@ final class TransmitterContainer extends Container {
     void rescan() {
         if (tile != null && tile.canEdit(viewer) && tile.requestRescan()) {
             String result = tile.isAutomatic() ? "rescan_queued" : "retry_queued";
-            viewer.sendStatusMessage(new TextComponentTranslation("gui.me_wireless.transmitter." + result), true);
+            viewer.sendStatusMessage(new TextComponentTranslation("gui.ae2_wireless_extensions.transmitter." + result), true);
         }
     }
 

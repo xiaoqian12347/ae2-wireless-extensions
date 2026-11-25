@@ -83,7 +83,7 @@ tokenEnvoy {
 
 jar {
     manifest {
-        attributes 'MixinConfigs': 'mixins.me_wireless.json'
+        attributes 'MixinConfigs': 'mixins.ae2_wireless_extensions.json'
         if (access_transformers) {
             attributes 'FMLAT': access_transformers.tokenize().join(' ')
         }
@@ -115,7 +115,7 @@ cleanroom {
         client {
             configure {
                 username = minecraft_username
-                args '--mixin', 'mixins.me_wireless.json'
+                args '--mixin', 'mixins.ae2_wireless_extensions.json'
                 if (extra_jvm_args) {
                     jvmArgs extra_jvm_args.tokenize()
                 }
@@ -123,7 +123,7 @@ cleanroom {
         }
         server {
             configure {
-                args '--mixin', 'mixins.me_wireless.json'
+                args '--mixin', 'mixins.ae2_wireless_extensions.json'
                 if (extra_jvm_args) {
                     jvmArgs extra_jvm_args.tokenize()
                 }

@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "normal": { "model": "ae2_wireless_extensions:wireless_signal_generator" }
+  }
+}

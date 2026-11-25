@@ -85,6 +85,6 @@ final class ChannelBindingCardItem extends Item {
     }
 
     private static void message(EntityPlayer player, String key, Object... args) {
-        player.sendStatusMessage(new TextComponentTranslation("item.me_wireless.channel_binding_card." + key, args), true);
+        player.sendStatusMessage(new TextComponentTranslation("item.ae2_wireless_extensions.channel_binding_card." + key, args), true);
     }
 }

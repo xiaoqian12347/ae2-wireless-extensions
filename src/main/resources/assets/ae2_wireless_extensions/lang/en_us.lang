@@ -1,0 +1,36 @@
+itemGroup.ae2_wireless_extensions=AE2 Wireless Extensions
+tile.ae2_wireless_extensions.wireless_signal_generator.name=Wireless Signal Generator
+
+gui.ae2_wireless_extensions.transmitter.offline=Offline
+gui.ae2_wireless_extensions.transmitter.band=Band
+gui.ae2_wireless_extensions.transmitter.wired_input=Wired input
+gui.ae2_wireless_extensions.transmitter.channel_total=Total
+gui.ae2_wireless_extensions.transmitter.remaining=Free
+gui.ae2_wireless_extensions.transmitter.used=In use
+gui.ae2_wireless_extensions.transmitter.requested=Request
+gui.ae2_wireless_extensions.transmitter.range=Radius
+gui.ae2_wireless_extensions.transmitter.automatic=Auto
+gui.ae2_wireless_extensions.transmitter.manual=Manual
+gui.ae2_wireless_extensions.transmitter.connections=Connections
+gui.ae2_wireless_extensions.transmitter.bands=Frequency bands
+gui.ae2_wireless_extensions.transmitter.no_bands=No wireless bands available
+gui.ae2_wireless_extensions.transmitter.no_connections=No direct wireless connections
+gui.ae2_wireless_extensions.transmitter.back=Back
+
+gui.ae2_wireless_extensions.transmitter.online=Online
+gui.ae2_wireless_extensions.transmitter.disconnect=Unlink
+item.ae2_wireless_extensions.channel_binding_card.name=Channel Binding Card
+item.ae2_wireless_extensions.channel_binding_card.bound=Bound · Connected devices: %s
+item.ae2_wireless_extensions.channel_binding_card.updated=Link updated
+item.ae2_wireless_extensions.channel_binding_card.invalid=Cannot link this target to the generator
+gui.ae2_wireless_extensions.transmitter.ym_unavailable=Compatible YM Additions not installed
+
+gui.ae2_wireless_extensions.transmitter.show_overlay=Show range and links
+gui.ae2_wireless_extensions.transmitter.hide_overlay=Hide range and links
+
+gui.ae2_wireless_extensions.transmitter.rescan_short=Scan
+gui.ae2_wireless_extensions.transmitter.connections_short=Links
+gui.ae2_wireless_extensions.transmitter.rescan=Rescan nearby devices
+gui.ae2_wireless_extensions.transmitter.retry=Retry existing links
+gui.ae2_wireless_extensions.transmitter.rescan_queued=Rescanning nearby devices
+gui.ae2_wireless_extensions.transmitter.retry_queued=Retrying existing links

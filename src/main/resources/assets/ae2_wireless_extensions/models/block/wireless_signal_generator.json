@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"particle": "me_wireless:blocks/wireless_signal_generator",
-		"surface": "me_wireless:blocks/wireless_signal_generator"
+		"particle": "ae2_wireless_extensions:blocks/wireless_signal_generator",
+		"surface": "ae2_wireless_extensions:blocks/wireless_signal_generator"
 	},
 	"elements": [
 		{

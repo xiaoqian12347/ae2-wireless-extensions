@@ -56,7 +56,8 @@ public final class TransmitterPackets {
     }
 
     static void register() {
-        channel = NetworkRegistry.INSTANCE.newSimpleChannel(MEWireless.MOD_ID);
+        // Minecraft 1.12.2 custom payload channels are limited to 20 characters.
+        channel = NetworkRegistry.INSTANCE.newSimpleChannel("ae2_wireless_ext");
         channel.registerMessage(RequestHandler.class, Request.class, 0, Side.SERVER);
         channel.registerMessage(SnapshotHandler.class, Snapshot.class, 1, Side.CLIENT);
     }

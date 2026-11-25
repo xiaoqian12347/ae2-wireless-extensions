@@ -29,7 +29,7 @@ final class TransmitterScreen extends GuiContainer {
 
     private static final ResourceLocation BACKGROUND =
             new ResourceLocation(MEWireless.MOD_ID, "textures/gui/wireless_signal_generator.png");
-    private static final String KEY = "gui.me_wireless.transmitter.";
+    private static final String KEY = "gui.ae2_wireless_extensions.transmitter.";
     private static final int TEXT = 0x36374A;
     private static final int PANEL_COLOR = 0xFFC9CAD3;
     private static final int SECONDARY = 0x51536B;
@@ -363,7 +363,7 @@ final class TransmitterScreen extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(I18n.format("tile.me_wireless.wireless_signal_generator.name"), 8, 7, TEXT);
+        fontRenderer.drawString(I18n.format("tile.ae2_wireless_extensions.wireless_signal_generator.name"), 8, 7, TEXT);
         fontRenderer.drawString(I18n.format("container.inventory"), 8, 133, TEXT);
         NBTTagCompound data = menu.getSnapshot();
         boolean online = data.getBoolean("Online");
