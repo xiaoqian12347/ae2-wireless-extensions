@@ -1,0 +1,54 @@
+{
+  "type": "forge:ore_shaped",
+  "conditions": [
+    {
+      "type": "minecraft:item_exists",
+      "item": "appliedenergistics2:controller"
+    },
+    {
+      "type": "appliedenergistics2:material_exists",
+      "material": "material.fluix_crystal"
+    },
+    {
+      "type": "appliedenergistics2:material_exists",
+      "material": "material.wireless"
+    },
+    {
+      "type": "appliedenergistics2:material_exists",
+      "material": "material.calculation_processor"
+    },
+    {
+      "type": "appliedenergistics2:part_exists",
+      "part": "cable_dense_smart.fluix"
+    }
+  ],
+  "pattern": [
+    "FRF",
+    "PCP",
+    "FDF"
+  ],
+  "key": {
+    "F": {
+      "type": "appliedenergistics2:part",
+      "part": "material.fluix_crystal"
+    },
+    "R": {
+      "type": "appliedenergistics2:part",
+      "part": "material.wireless"
+    },
+    "P": {
+      "type": "appliedenergistics2:part",
+      "part": "material.calculation_processor"
+    },
+    "C": {
+      "item": "appliedenergistics2:controller"
+    },
+    "D": {
+      "type": "appliedenergistics2:part",
+      "part": "cable_dense_smart.fluix"
+    }
+  },
+  "result": {
+    "item": "me_wireless:wireless_signal_generator"
+  }
+}
