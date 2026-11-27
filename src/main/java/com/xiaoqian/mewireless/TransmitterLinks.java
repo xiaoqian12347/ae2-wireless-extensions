@@ -603,37 +603,48 @@ final class TransmitterLinks {
         }
     }
 
-    boolean trimOne(int limit) {
+    boolean trimToLimit(int limit) {
         IGridNode source = linkSource();
-        if (source == null || source.getGrid() == null) {
+        IGrid grid = source == null ? null : source.getGrid();
+        if (grid == null || live.isEmpty()) {
             return false;
         }
-        Map<BlockPos, Integer> usage = linkChannels(source);
-        if (committedChannels <= limit) {
-            return false;
-        }
-
-        BlockPos latestAutomatic = null;
-        BlockPos latestManual = null;
-        for (Map.Entry<BlockPos, Integer> entry : usage.entrySet()) {
-            if (entry.getValue() > 0) {
-                BlockPos pos = entry.getKey();
-                if (isManual(pos)) {
-                    latestManual = pos;
-                } else {
-                    latestAutomatic = pos;
-                }
-            }
-        }
-
-        if (!TransmitterGridCache.tryReserveEdit(source.getGrid())) {
+        if (!grid.<TransmitterGridCache>getCache(TransmitterGridCache.class).canEdit()) {
             return true;
         }
 
-        BlockPos pos = latestAutomatic != null ? latestAutomatic : latestManual;
-        shedDemand.put(pos, usage.get(pos));
-        removeLive(pos);
-        TransmitterGridCache.deferEdits(source.getGrid());
+        Map<BlockPos, Integer> usage = linkChannels(source);
+        int excess = committedChannels - limit;
+        if (excess <= 0) {
+            return false;
+        }
+
+        Deque<Map.Entry<BlockPos, Integer>> candidates = new ArrayDeque<>();
+        Deque<Map.Entry<BlockPos, Integer>> manual = new ArrayDeque<>();
+        for (Map.Entry<BlockPos, Integer> entry : usage.entrySet()) {
+            if (entry.getValue() > 0) {
+                (isManual(entry.getKey()) ? manual : candidates).addFirst(entry);
+            }
+        }
+        candidates.addAll(manual);
+
+        int maxEdits = TransmitterConfig.maxEditsPerTick();
+        List<Map.Entry<BlockPos, Integer>> batch = new ArrayList<>();
+        while (excess > 0 && batch.size() < maxEdits && !candidates.isEmpty()) {
+            Map.Entry<BlockPos, Integer> entry = candidates.removeFirst();
+            batch.add(entry);
+            excess -= entry.getValue();
+        }
+        if (!TransmitterDiscovery.tryReserveAutomaticEdits(batch.size())) {
+            return true;
+        }
+
+        for (Map.Entry<BlockPos, Integer> entry : batch) {
+            shedDemand.put(entry.getKey(), entry.getValue());
+            removeLive(entry.getKey());
+        }
+        TransmitterGridCache.deferEdits(grid);
+        TransmitterGridCache.awaitRouting(grid);
         return true;
     }
 

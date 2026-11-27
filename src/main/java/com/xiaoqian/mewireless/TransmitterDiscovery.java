@@ -54,10 +54,14 @@ public final class TransmitterDiscovery {
     }
 
     static boolean tryReserveAutomaticEdit() {
-        if (!hasAutomaticEditBudget()) {
+        return tryReserveAutomaticEdits(1);
+    }
+
+    static boolean tryReserveAutomaticEdits(int count) {
+        if (count > remainingAutomaticEdits()) {
             return false;
         }
-        automaticEdits++;
+        automaticEdits += count;
         return true;
     }
 

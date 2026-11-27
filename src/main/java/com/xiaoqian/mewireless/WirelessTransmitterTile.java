@@ -144,14 +144,9 @@ public final class WirelessTransmitterTile extends AENetworkTile implements ITic
         if (requestedChannels == 0) {
             links.clearRuntime();
             disconnectBand();
-        } else if (requested < previous && grid != null) {
-            if (TransmitterGridCache.isRouting(grid)) {
-                return;
-            }
-            if (links.trimOne(requested)) {
-                applyChannelChangeAt = now + 2;
-                return;
-            }
+        } else if (requestedChannels < appliedRequestedChannels && links.trimToLimit(requestedChannels)) {
+            applyChannelChangeAt = now + 2;
+            return;
         }
 
         appliedRequestedChannels = requestedChannels;

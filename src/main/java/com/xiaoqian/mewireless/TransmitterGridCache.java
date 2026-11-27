@@ -75,16 +75,6 @@ public final class TransmitterGridCache implements IGridCache {
         nextConnection = new WeakReference<>(tile);
     }
 
-    static boolean tryReserveEdit(IGrid grid) {
-        TransmitterGridCache cache = grid.getCache(TransmitterGridCache.class);
-        long now = TransmitterDiscovery.getServerTick();
-        if (!cache.canEdit() || !TransmitterDiscovery.tryReserveAutomaticEdit()) {
-            return false;
-        }
-        cache.nextWirelessEdit = now + 2;
-        return true;
-    }
-
     static void deferEdits(IGrid grid) {
         if (grid != null) {
             grid.<TransmitterGridCache>getCache(TransmitterGridCache.class).nextWirelessEdit =
