@@ -22,4 +22,4 @@ $env:JAVA_HOME = 'C:/Program Files/Java/jdk-25.0.2'
 .\gradlew.bat build
 ```
 
-发布文件为 `build/libs/ae2-wireless-extensions-1.0.0.jar`。
+发布文件为 `build/libs/ae2-wireless-extensions-1.01.jar`。

@@ -206,8 +206,11 @@ final class TransmitterContainer extends Container {
         data.setBoolean("YmSupported", YmBands.isAvailable());
         data.setBoolean("Editable", tile.canEdit(viewer));
         data.setBoolean("Online", tile.isInputOnline());
-        data.setInteger("Capacity", tile.getInputCapacity());
-        data.setInteger("Used", tile.getUsedChannels());
+        int capacity = tile.getInputCapacity();
+        int used = tile.getUsedChannels();
+        data.setInteger("Capacity", capacity);
+        data.setInteger("Used", used);
+        data.setInteger("Remaining", tile.getRemainingChannels(capacity, used));
         UUID selected = tile.getBandId();
         if (selected != null) {
             data.setUniqueId("Band", selected);

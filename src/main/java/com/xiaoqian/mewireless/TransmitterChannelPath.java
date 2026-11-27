@@ -17,17 +17,24 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.core.AEConfig;
 import appeng.me.pathfinding.IPathItem;
+import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.tile.networking.TileController;
 
 final class TransmitterChannelPath {
 
     private final List<Segment> segments;
+    private final int remaining;
 
     private TransmitterChannelPath(List<Segment> segments) {
         this.segments = segments;
+        int free = Integer.MAX_VALUE;
+        for (Segment segment : segments) {
+            free = Math.min(free, segment.freeChannels);
+        }
+        remaining = Math.max(0, free);
     }
 
-    static TransmitterChannelPath find(IGridNode start, IGrid grid, IGridConnection bandInput) {
+    static TransmitterChannelPath find(IGridNode start, IGrid grid, IGridConnection inputConnection) {
         List<Segment> segments = new ArrayList<>();
         Set<IGridNode> visited = new HashSet<>();
         int normal = AEConfig.instance().getNormalChannelCapacity();
@@ -42,13 +49,15 @@ final class TransmitterChannelPath {
                 return null;
             }
             IGridConnection connection = (IGridConnection) route;
-            boolean expectedConnection = node == start && bandInput != null
-                    ? connection == bandInput : connection.hasDirection();
-            if (!expectedConnection || !TransmitterLinks.isLive(node, connection)) {
+            if ((node == start && connection != inputConnection) || !TransmitterLinks.isLive(node, connection)) {
                 return null;
             }
             IGridNode upstream = connection.getOtherSide(node);
             if (upstream == null || upstream.getGrid() != grid || connection.a() != upstream) {
+                return null;
+            }
+            if (node != start && !connection.hasDirection()
+                    && !(node.getMachine() instanceof PartP2PTunnelME && upstream.getMachine() instanceof PartP2PTunnelME)) {
                 return null;
             }
 
@@ -59,8 +68,12 @@ final class TransmitterChannelPath {
         return segments.isEmpty() ? null : new TransmitterChannelPath(segments);
     }
 
+    int remaining() {
+        return remaining;
+    }
+
     int available(Map<IGridConnection, Integer> reserved) {
-        int available = Integer.MAX_VALUE;
+        int available = remaining;
         for (Segment segment : segments) {
             available = Math.min(available, segment.freeChannels - reserved.getOrDefault(segment.connection, 0));
         }

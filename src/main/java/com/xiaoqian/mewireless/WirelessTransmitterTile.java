@@ -326,7 +326,7 @@ public final class WirelessTransmitterTile extends AENetworkTile implements ITic
     }
 
     @Nullable
-    IGridConnection routedBandInput(IGridNode input) {
+    private IGridConnection routedBandInput(IGridNode input) {
         if (bandInput == null || !TransmitterLinks.isLive(input, bandInput)) {
             return null;
         }
@@ -458,6 +458,38 @@ public final class WirelessTransmitterTile extends AENetworkTile implements ITic
         IGridNode node = getActionableNode();
         return input.getOtherSide(node).hasFlag(GridFlags.DENSE_CAPACITY)
                 ? AEConfig.instance().getDenseChannelCapacity() : AEConfig.instance().getNormalChannelCapacity();
+    }
+
+    @Nullable
+    TransmitterChannelPath findInputPath(IGrid grid) {
+        IGridNode node = getActionableNode();
+        if (node == null || node.getGrid() != grid
+                || grid.<IPathingGrid>getCache(IPathingGrid.class).getControllerState() != ControllerState.CONTROLLER_ONLINE) {
+            return null;
+        }
+        IGridConnection input = bandId == null ? getWiredInput() : routedBandInput(node);
+        return input == null ? null : TransmitterChannelPath.find(node, grid, input);
+    }
+
+    int getWiredRemaining(IGrid grid, @Nullable TransmitterChannelPath path, int used) {
+        ControllerState state = grid.<IPathingGrid>getCache(IPathingGrid.class).getControllerState();
+        if (state == ControllerState.NO_CONTROLLER) {
+            return Math.max(0, AEConfig.instance().getNormalChannelCapacity() - used);
+        }
+        return path == null ? 0 : path.remaining();
+    }
+
+    int getRemainingChannels(int capacity, int used) {
+        int localRemaining = capacity == Integer.MAX_VALUE ? capacity : Math.max(0, capacity - used);
+        if (bandId != null || localRemaining == 0) {
+            return localRemaining;
+        }
+        IGridNode node = getActionableNode();
+        IGrid grid = node == null ? null : node.getGrid();
+        if (grid == null || !TransmitterGridCache.isReadyForRestore(grid)) {
+            return 0;
+        }
+        return Math.min(localRemaining, getWiredRemaining(grid, findInputPath(grid), used));
     }
 
     int getUsedChannels() {

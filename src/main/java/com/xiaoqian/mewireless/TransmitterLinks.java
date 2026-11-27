@@ -174,6 +174,8 @@ final class TransmitterLinks {
             }
         }
 
+        dropUnservedWiredLinks(source);
+
         long now = world.getTotalWorldTime();
         boolean removed = false;
         for (Iterator<BlockPos> it = targets.keySet().iterator(); it.hasNext();) {
@@ -223,6 +225,39 @@ final class TransmitterLinks {
         }
         candidates.sort(Comparator.comparingDouble(tile.getPos()::distanceSq));
         candidates.forEach(pos -> pending.put(pos, false));
+    }
+
+    private void dropUnservedWiredLinks(IGridNode source) {
+        if (tile.getBandId() != null || live.isEmpty() || source == null || live.size() <= tile.getUsedChannels()) {
+            return;
+        }
+        IGrid grid = source.getGrid();
+        if (grid == null || !TransmitterGridCache.isReadyForRestore(grid)
+                || !TransmitterDiscovery.hasAutomaticEditBudget()) {
+            return;
+        }
+        TransmitterChannelPath path = tile.findInputPath(grid);
+        if (path == null || path.remaining() > 0) {
+            return;
+        }
+
+        boolean removed = false;
+        Iterator<IGridConnection> it = live.values().iterator();
+        while (it.hasNext() && TransmitterDiscovery.hasAutomaticEditBudget()) {
+            IGridConnection connection = it.next();
+            IGridNode target = connection.getOtherSide(source);
+            if (target != null && target.getGrid() == grid && hasOnlyConnection(target, connection)
+                    && !target.meetsChannelRequirements() && TransmitterDiscovery.tryReserveAutomaticEdit()) {
+                it.remove();
+                destroy(connection);
+                removed = true;
+            }
+        }
+        if (removed) {
+            linkRevision++;
+            TransmitterGridCache.deferEdits(grid);
+            TransmitterGridCache.awaitRouting(grid);
+        }
     }
 
     boolean hasStartupTargets() {
@@ -407,13 +442,15 @@ final class TransmitterLinks {
             return null;
         }
         linkChannels(source);
-        int available = tile.getAppliedChannelLimit() - Math.max(committedChannels, tile.getUsedChannels());
-        if (available <= 0) {
-            nextConnectAt = now + QUEUE_RETRY_DELAY;
-            return null;
+        int used = tile.getUsedChannels();
+        int available = tile.getAppliedChannelLimit() - Math.max(committedChannels, used);
+        TransmitterChannelPath path = available > 0 ? connectionPath(source, grid) : null;
+        if (tile.getBandId() == null) {
+            available = Math.min(available, tile.getWiredRemaining(grid, path, used));
+        } else if (path != null) {
+            available = Math.min(available, path.remaining());
         }
-        TransmitterChannelPath path = connectionPath(source, grid);
-        if (path != null && path.available(Collections.emptyMap()) == 0) {
+        if (available <= 0) {
             nextConnectAt = now + QUEUE_RETRY_DELAY;
             return null;
         }
@@ -430,11 +467,7 @@ final class TransmitterLinks {
                 || ((IPathItem) source).getControllerRoute() != outputBridge || outputBridge.a() != input))) {
             return null;
         }
-        IGridConnection bandInput = tile.getBandId() == null ? null : tile.routedBandInput(input);
-        if (tile.getBandId() != null && bandInput == null) {
-            return null;
-        }
-        return TransmitterChannelPath.find(input, grid, bandInput);
+        return tile.findInputPath(grid);
     }
 
     int targetPriority(BlockPos pos) {

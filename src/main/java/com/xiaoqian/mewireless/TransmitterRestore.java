@@ -49,11 +49,7 @@ final class TransmitterRestore {
             if (input == null || input.getGrid() != grid) {
                 continue;
             }
-            IGridConnection bandInput = tile.getBandId() == null ? null : tile.routedBandInput(input);
-            if (tile.getBandId() != null && (bandInput == null || bandInput.a() == input)) {
-                continue;
-            }
-            TransmitterChannelPath path = TransmitterChannelPath.find(input, grid, bandInput);
+            TransmitterChannelPath path = tile.findInputPath(grid);
             int limit = path == null ? 0 : Math.min(maxTargets,
                     Math.min(path.available(reserved), tile.getAppliedChannelLimit() - tile.getUsedChannels()));
             if (limit < 2) {

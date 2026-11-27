@@ -403,7 +403,7 @@ final class TransmitterScreen extends GuiContainer {
         fontRenderer.drawString(fontRenderer.trimStringToWidth(input, 87), 45, 26, ACCENT);
         int total = data.getInteger("Capacity");
         int used = data.getInteger("Used");
-        int remaining = total == Integer.MAX_VALUE ? total : Math.max(0, total - used);
+        int remaining = data.getInteger("Remaining");
         centered(I18n.format(KEY + "channel_total"), 8, 47, 53, SECONDARY);
         centered(I18n.format(KEY + "used"), 62, 47, 53, ACCENT);
         centered(I18n.format(KEY + "remaining"), 116, 47, 52, SECONDARY);

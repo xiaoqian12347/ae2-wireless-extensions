@@ -17,6 +17,7 @@ import appeng.api.networking.events.MENetworkControllerChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
+import com.xiaoqian.mewireless.mixin.PathGridCacheAccessor;
 import net.minecraft.tileentity.TileEntity;
 
 public final class TransmitterGridCache implements IGridCache {
@@ -62,7 +63,8 @@ public final class TransmitterGridCache implements IGridCache {
 
     boolean canEdit() {
         return !routing && routingRevision >= awaitedRoutingRevision
-                && TransmitterDiscovery.getServerTick() >= nextWirelessEdit;
+                && TransmitterDiscovery.getServerTick() >= nextWirelessEdit
+                && !((PathGridCacheAccessor) grid.getCache(IPathingGrid.class)).ae2WirelessExtensions$isRepathPending();
     }
 
     WirelessTransmitterTile nextConnection() {
